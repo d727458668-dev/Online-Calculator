@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mobile Scientific Calculator</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#0f172a;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.calculator{
+width:100%;
+max-width:360px;
+background:#020617;
+padding:15px;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,0.6);
+}
+
+.display{
+background:#111827;
+color:white;
+font-size:28px;
+padding:15px;
+border-radius:10px;
+text-align:right;
+margin-bottom:10px;
+min-height:60px;
+word-wrap:break-word;
+}
+
+.buttons{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+}
+
+button{
+height:55px;
+border:none;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+}
+
+.number{background:#334155;color:white;}
+.operator{background:#f59e0b;color:white;}
+.func{background:#6366f1;color:white;}
+.equal{background:#10b981;color:white;}
+.clear{background:#ef4444;color:white;}
+
+.solve{
+background:#22c55e;
+grid-column:span 2;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+<div id="display" class="display">0</div>
+
+<div class="buttons">
+
+<button class="func" onclick="add('sin(')">sin</button>
+<button class="func" onclick="add('cos(')">cos</button>
+<button class="func" onclick="add('tan(')">tan</button>
+<button class="operator" onclick="add('/')">÷</button>
+
+<button class="func" onclick="add('log(')">log</button>
+<button class="func" onclick="add('sqrt(')">√</button>
+<button class="func" onclick="add('(')">(</button>
+<button class="func" onclick="add(')')">)</button>
+
+<button class="number" onclick="add('7')">7</button>
+<button class="number" onclick="add('8')">8</button>
+<button class="number" onclick="add('9')">9</button>
+<button class="operator" onclick="add('*')">×</button>
+
+<button class="number" onclick="add('4')">4</button>
+<button class="number" onclick="add('5')">5</button>
+<button class="number" onclick="add('6')">6</button>
+<button class="operator" onclick="add('-')">-</button>
+
+<button class="number" onclick="add('1')">1</button>
+<button class="number" onclick="add('2')">2</button>
+<button class="number" onclick="add('3')">3</button>
+<button class="operator" onclick="add('+')">+</button>
+
+<button class="number" onclick="add('0')">0</button>
+<button class="number" onclick="add('.')">.</button>
+<button class="clear" onclick="clearDisplay()">C</button>
+<button class="equal" onclick="calculate()">=</button>
+
+<button class="solve" onclick="solveEquation()">Solve Equation</button>
+
+</div>
+
+</div>
+
+<script>
+
+let display=document.getElementById("display")
+
+function add(val){
+
+if(display.innerText==="0")
+display.innerText=val
+else
+display.innerText+=val
+
+}
+
+function clearDisplay(){
+
+display.innerText="0"
+
+}
+
+function calculate(){
+
+try{
+
+let exp=display.innerText
+
+// scientific functions
+exp=exp.replace(/sin\((.*?)\)/g,(m,v)=>Math.sin(v*Math.PI/180))
+exp=exp.replace(/cos\((.*?)\)/g,(m,v)=>Math.cos(v*Math.PI/180))
+exp=exp.replace(/tan\((.*?)\)/g,(m,v)=>Math.tan(v*Math.PI/180))
+exp=exp.replace(/log\((.*?)\)/g,(m,v)=>Math.log10(v))
+exp=exp.replace(/sqrt\((.*?)\)/g,(m,v)=>Math.sqrt(v))
+
+display.innerText=Function("return "+exp)()
+
+}catch{
+
+display.innerText="Error"
+
+}
+
+}
+
+function solveEquation(){
+
+let eq=display.innerText
+
+if(!eq.includes("=")){
+
+display.innerText="Enter equation"
+return
+
+}
+
+let parts=eq.split("=")
+
+let left=parts[0]
+let right=parts[1]
+
+try{
+
+let x=(Function("return "+right)()-Function("return "+left.replace("x","0"))())/
+(Function("return "+left.replace("x","1"))()-Function("return "+left.replace("x","0"))())
+
+display.innerText="x = "+x
+
+}catch{
+
+display.innerText="Error"
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
